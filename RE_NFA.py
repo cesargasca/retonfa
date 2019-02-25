@@ -184,10 +184,16 @@ class NFA(object):
 		return operands
 		'''
 
-	def re_to_nfa(self,regexp):
+class RegularExpresion(object):
+	"""docstring for RegularExpresion"""
+	def __init__(self, regexp):
+		self.infix = regexp
+		self.postfix = infixToPostfix(regexp)
+
+	def re_to_nfa(self):
 		'''convierte expresion regular a AFN mediante construccion de thompson'''
 		stack = []
-		postfix = infixToPostfix(regexp)
+		postfix = infixToPostfix(self.infix)
 		#print(postfix)
 		for s in postfix:
 			#print("------>" + s)
@@ -211,13 +217,11 @@ class NFA(object):
 				new_NFA = NFA(1,2,initialTransitions) #crea automata básico 
 				stack.append(new_NFA) #inserta al final de la lista
 		return stack.pop() #regresa el ultimo valor de la lista, que es el automata final 
-
+		
 
 from pythonds.basic.stack import Stack
-def infixToPostfix(infixexpr):
-	'''convierte regex en infix a postfix''' 
+def infixToPostfix(infixexpr): 
     prec = {}
-    '''Diccionario de jerarquías'''
     prec["*"] = 4
     prec["+"] = 4
     prec["."] = 3
@@ -247,20 +251,16 @@ def infixToPostfix(infixexpr):
     return "".join(postfixList)
 
 if __name__ == '__main__':
-	transitions1 = [Transition(1,2,"a"),Transition(2,3,"c")]
-	transitions2 = [Transition(1,2,"b")]
-	r = NFA(1,2,transitions1)
-	s = NFA(1,2,transitions2)
-
 	print("digraph AFN{")
 	print("rankdir=LR; \n node[shape = circle];")
 
 	#aversicierto = r.re_to_nfa("((((((a.b+)|(c+.b))|(a.b))+).(b.c))|(a+))*")
 	#aversicierto = r.re_to_nfa("(((((a.b+).(c))|((c.b).(a*)))|(c.b))+.((c.c)*))|(c.b)")
 	regexp = str(sys.argv[1])
+	re = RegularExpresion(regexp)
 	#regexp = "(a|b)*.c"
 	#regexp = "(a.b+.c|c.b.a*|c.b)*.(c.c)*|c.b"
-	thompson = r.re_to_nfa(regexp)
+	thompson = re.re_to_nfa()
 	thompson.printTransitions()
 
 	
