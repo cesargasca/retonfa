@@ -3,6 +3,6 @@ Programa que convierte Expresión Regular en Autómata Finito No Determinista co
 
 
 
-#Compilar
+# Compilar
 python3 RE_NFA.py > "nombre".gv
 dot -Tgif "nombre".gv > "nombre2".gif
