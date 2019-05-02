@@ -1,0 +1,14 @@
+digraph AFN{
+rankdir=LR; 
+ node[shape = circle];
+nodeI [shape=point];
+node1 [name="1"];
+node2 [name="2"];
+node3 [name="3"];
+node4 [name="4"];
+node4 [name="4" shape = "doublecircle"];
+nodeI -> node1 [label = "I"];
+node1 -> node2 [label = "a"];
+node2 -> node3 [label = "b"];
+node3 -> node4 [label = "c"];
+}

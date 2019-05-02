@@ -1,4 +1,5 @@
 import sys
+import os
 class Transition(object):
 	"""docstring for Transition"""
 	def __init__(self, nodeFrom,nodeTo,symbol):
@@ -24,15 +25,19 @@ class NFA(object):
 
 	def printTransitions(self):
 		'''imprime cada transicion con la sintaxis para grapghviz'''
-		print("nodeI [shape=point];")
+		f= open("NFA.gv","w+")
+		f.write("digraph AFN{\n")
+		f.write("rankdir=LR; \n node[shape = circle];\n")
+		f.write("nodeI [shape=point];\n")
 		for i in range(self.finalState):
-			print("node"+str(i+1)+" [name=\""+str(i+1)+"\"];")
+			f.write("node"+str(i+1)+" [name=\""+str(i+1)+"\"];\n")
 			if (i+1) == self.finalState:
-				print("node"+str(i+1)+" [name=\""+str(i+1)+"\" shape = \"doublecircle\"];")
+				f.write("node"+str(i+1)+" [name=\""+str(i+1)+"\" shape = \"doublecircle\"];\n")
 			i+=1
-		print("nodeI -> node1 [label = \"I\"];")
+		f.write("nodeI -> node1 [label = \"I\"];\n")
 		for t in self.transitions:
-			print(t)
+			f.write(str(t) + "\n")
+		f.write("}\n")
 
 	
 	
@@ -187,7 +192,7 @@ class NFA(object):
 class RegularExpresion(object):
 	"""docstring for RegularExpresion"""
 	def __init__(self, regexp):
-		self.infix = regexp
+		self.infix = ponPuntos(regexp)
 		self.postfix = infixToPostfix(regexp)
 
 	def re_to_nfa(self):
@@ -250,6 +255,56 @@ def infixToPostfix(infixexpr):
         postfixList.append(opStack.pop())
     return "".join(postfixList)
 
+def ponPuntos(re):
+	op = ["(","|",".",")"]
+	aux = ""
+	i = 0
+	n = 0
+	#print(len(re))
+	while (i + 1) < len(re):
+		
+		if re[i] in op:
+			if re[i] == ")" and re[i+1] == "+" or re[i+1] == "*":
+				aux += re[i]
+				aux += re[i+1]
+			elif re[i] == ")" and re[i+1] not in op and re[i+1] != "+" and re[i+1] != "*":
+				aux += re[i]
+				aux+= "."
+				#aux += re[i+1]
+			else:
+				aux += re[i]
+
+		elif re[i] == "+" or re[i] == "*":
+			if(re[i+1] not in op) or re[i+1] == "(":
+				aux+= "."
+			
+			
+		elif re[i] not in op and re[i + 1] not in op and re[i + 1] != "*" and re[i + 1] != "+":
+			aux += re[i]
+			aux += "."
+					
+		elif re[i] not in op and re[i + 1] == "*" or re[i + 1] == "+":
+			aux += re[i]
+			aux += re[i+1]
+				
+		elif (re[i] not in op and re[i+1] in op):
+			aux += re[i]
+		else:
+			print("NO C")
+			print(aux)
+			break
+		i+=1
+		n = i
+		if re[i] not in op and re[i] != "*" and re[i] != "+" and n + 1 == len(re):
+			#print("entra")
+			aux += re[i]
+		
+		
+	#print(i)
+	#aux += re[len(re)-1]	
+	return aux
+
+
 if __name__ == '__main__':
 	print("digraph AFN{")
 	print("rankdir=LR; \n node[shape = circle];")
@@ -265,6 +320,7 @@ if __name__ == '__main__':
 
 	
 	print("}")
+	os.system("dot -Tgif NFA.gv > NFA.gif")
 	'''
 	c = r.concatenate(s)
 	u = r.union(s)
