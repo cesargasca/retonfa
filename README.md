@@ -4,5 +4,5 @@ Programa que convierte Expresión Regular en Autómata Finito No Determinista co
 
 
 # Compilar
-python3 RE_NFA.py > "nombre".gv <br/>
-dot -Tgif "nombre".gv > "nombre2".gif
+python3 RE_NFA.py "regexp"
+
